@@ -8,8 +8,9 @@
     <package>
         <blacklist>
             <path value=".git" type="dir"/>
-            <path value="node_modules" type="dir"/>
             <path value=".gitignore" type="file"/>
+            <path value="node_modules" type="dir"/>
+            <path value="src" type="dir"/>
             <path value="package.json" type="file"/>
             <path value="package-lock.json" type="file"/>
             <path value="tsconfig.json" type="file"/>

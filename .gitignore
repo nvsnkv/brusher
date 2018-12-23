@@ -3,3 +3,6 @@ TeethsBrushingHelper.wgt
 .sign/.manifest.tmp
 .sign/author-signature.xml
 .sign/signature1.xml
+.manifest.tmp
+author-signature.xml
+signature1.xml
