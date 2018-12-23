@@ -1,0 +1,1 @@
+tizen package -t wgt -- %~dp0\..\.buildResult
