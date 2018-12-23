@@ -7,3 +7,5 @@ TeethsBrushingHelper.wgt
 author-signature.xml
 signature1.xml
 /.buildResult
+/app.js
+/app.js.map
