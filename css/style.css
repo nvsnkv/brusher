@@ -27,3 +27,8 @@ body {
 	font-size:5em;
 	color:#fff;
 }
+
+.logo {
+	margin: 0px auto;
+	display: block;
+}

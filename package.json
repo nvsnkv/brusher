@@ -1,0 +1,37 @@
+{
+  "name": "teethsbrushinghelper",
+  "version": "0.0.0",
+  "description": "The simple app that will let you know when your teeths are clean enough. Icons made by <a href=\"https://www.flaticon.com/authors/creaticca-creative-agency\" title=\"Creaticca Creative Agency\">Creaticca Creative Agency</a> from <a href=\"https://www.flaticon.com/\" title=\"Flaticon\">www.flaticon.com</a> is licensed by <a href=\"http://creativecommons.org/licenses/by/3.0/\" title=\"Creative Commons BY 3.0\" target=\"_blank\">CC 3.0 BY</a>",
+  "main": "index.html",
+  "private": true,
+  "directories": {
+    "lib": "lib"
+  },
+  "scripts": {
+    "test": "nope"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://nvsnkv@bitbucket.org/nvsnkv/teeths_brushing_helper.git"
+  },
+  "keywords": [
+    "teeth",
+    "brush",
+    "brushing",
+    "timer"
+  ],
+  "author": "nvsnkv",
+  "license": "MIT",
+  "homepage": "https://bitbucket.org/nvsnkv/teeths_brushing_helper#readme",
+  "dependencies": {
+    "@types/react": "^16.7.18",
+    "@types/react-dom": "^16.0.11",
+    "react": "^16.7.0",
+    "react-dom": "^16.7.0"
+  },
+  "devDependencies": {
+    "awesome-typescript-loader": "^5.2.1",
+    "source-map-loader": "^0.2.4",
+    "typescript": "^3.2.2"
+  }
+}
