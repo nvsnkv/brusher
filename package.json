@@ -19,8 +19,10 @@
   "homepage": "https://bitbucket.org/nvsnkv/teeths_brushing_helper#readme",
   "dependencies": {
     "@types/react": "^16.7.18",
+    "@types/react-circular-progressbar": "^1.0.1",
     "@types/react-dom": "^16.0.11",
     "react": "^16.7.0",
+    "react-circular-progressbar": "^1.0.0",
     "react-dom": "^16.7.0"
   },
   "devDependencies": {

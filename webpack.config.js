@@ -31,6 +31,7 @@ module.exports = {
     externals: {
         "react": "React",
         "react-dom": "ReactDOM",
-        "./tizen": "tizen"
+        "./tizen": "tizen",
+        "./navigator": "navigator"
     }
 };

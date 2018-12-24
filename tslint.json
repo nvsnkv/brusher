@@ -11,7 +11,9 @@
         "member-ordering": false,
         "member-access": false,
         "trailing-comma": false,
-        "triple-equals": false
+        "triple-equals": false,
+        "object-literal-sort-keys": false,
+        "max-line-length": false
     },
     "rulesDirectory": []
 }

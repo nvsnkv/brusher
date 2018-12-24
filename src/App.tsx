@@ -2,7 +2,8 @@ import * as React from "react";
 import * as ReactDOM from "react-dom";
 
 import {StartPage} from "./components/StartPage";
-import {MultiTimer} from "./MultiTimer";
+import {MultiTimer, TimerState} from "./MultiTimer";
+import * as navigator from "./navigator";
 import * as tizen from "./tizen";
 
 class App {
@@ -16,22 +17,28 @@ class App {
     ];
 
     start(): void {
+        const timer = new MultiTimer(this.timeouts, () => this.bzzt());
+
         window.addEventListener("tizenhwkey", (ev: any) => {
             if (ev.keyName === "back") {
-                tizen.application.getCurrentApplication().exit();
+                switch (timer.getState()) {
+                    case TimerState.Started:
+                        timer.pause();
+                        break;
+
+                    case TimerState.Paused:
+                        timer.stop();
+
+                    case TimerState.Stopped:
+                    tizen.application.getCurrentApplication().exit();
+                }
            }
         });
-
-        const timer = new MultiTimer(this.timeouts, this.bzzt, (progress) => this.updateProgress(progress));
         ReactDOM.render(<StartPage timer={timer} />, document.getElementById("application"));
     }
 
     private bzzt(): void {
-
-    }
-
-    private updateProgress(progress: number) {
-
+        navigator.vibrate(300);
     }
 }
 
