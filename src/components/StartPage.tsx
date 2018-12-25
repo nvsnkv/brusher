@@ -19,8 +19,8 @@ export class StartPage extends React.Component<IStartPageProps> {
 
         this.state = {timerState: this.timer.getState(), progress: 0};
 
-        this.timer.stateChanged = (timerState) => this.updateState();
-        this.timer.progressChanged = (progress) => this.updateState();
+        this.timer.stateChanged.add((timerState) => this.updateState());
+        this.timer.progressChanged.add((progress) => this.updateState());
     }
 
     private updateState(): void {
@@ -48,7 +48,7 @@ export class StartPage extends React.Component<IStartPageProps> {
                     }
                     </footer>
                     <div id="progressHolder">
-                        <CircularProgressbar percentage={state.progress} strokeWidth={4} styles={{trail: { stroke: "transparent" }}}/>
+                        <CircularProgressbar percentage={state.progress} strokeWidth={4} styles={{trail: { stroke: "black" }}}/>
                     </div>
                </div>;
     }

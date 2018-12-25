@@ -16,9 +16,20 @@ class App {
         5, 5, 5, 5, 5,
     ];
 
+    private keepScreenRequested: boolean = false;
+
     start(): void {
         const timer = new MultiTimer(this.timeouts, () => this.bzzt());
-
+        timer.stateChanged.add((state) => {
+            if (state == TimerState.Started && !this.keepScreenRequested) {
+                this.keepScreenRequested = true;
+                tizen.power.request("SCREEN", "SCREEN_NORMAL");
+            }
+            if (state != TimerState.Started && this.keepScreenRequested) {
+                this.keepScreenRequested = false;
+                tizen.power.request("SCREEN");
+            }
+        })
         window.addEventListener("tizenhwkey", (ev: any) => {
             if (ev.keyName === "back") {
                 switch (timer.getState()) {

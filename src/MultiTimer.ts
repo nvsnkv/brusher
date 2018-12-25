@@ -1,3 +1,5 @@
+import { Delegate } from "./Delegete";
+
 export enum TimerState {
     Started,
     Paused,
@@ -8,6 +10,8 @@ export class MultiTimer {
     private readonly timeouts: number[];
     private readonly total: number = 0;
     private readonly onTimeout: () => void;
+    private readonly raiseStateChanged: (arg: TimerState) => void;
+    private readonly raiseProgressChanged: (arg: number) => void;
 
     private state: TimerState  = TimerState.Stopped;
 
@@ -23,6 +27,14 @@ export class MultiTimer {
         }
 
         this.onTimeout = onTimeout;
+        let { delegate, invocator } = Delegate.Create<TimerState>();
+        this.stateChanged = delegate;
+        this.raiseStateChanged = invocator;
+
+        ({ delegate, invocator } = Delegate.Create<number>());
+
+        this.progressChanged = delegate;
+        this.raiseProgressChanged = invocator;
     }
 
     start(): void {
@@ -32,10 +44,7 @@ export class MultiTimer {
 
         if (this.state == TimerState.Paused) {
             this.state = TimerState.Started;
-
-            if (this.stateChanged) {
-                this.stateChanged(this.state);
-            }
+            this.raiseStateChanged(this.state);
         }
         else {
             this.index = -1;
@@ -44,10 +53,7 @@ export class MultiTimer {
 
             this.interval = window.setInterval(() => this.tick(), 1000);
             this.state = TimerState.Started;
-            
-            if (this.stateChanged) {
-                this.stateChanged(this.state);
-            }
+            this.raiseStateChanged(this.state);
         }
     }
 
@@ -58,11 +64,8 @@ export class MultiTimer {
 
         this.state = TimerState.Stopped;
         this.elapsed = 0;
+        this.raiseStateChanged(this.state);
         
-        if (this.stateChanged) {
-            this.stateChanged(this.state);
-        }
-
         window.clearInterval(this.interval);
         this.interval = null;
 
@@ -72,10 +75,7 @@ export class MultiTimer {
 
     pause(): void {
         this.state = TimerState.Paused;
-
-        if (this.stateChanged) {
-            this.stateChanged(this.state);
-        }
+        this.raiseStateChanged(this.state);
     }
 
     getState(): TimerState {
@@ -86,8 +86,8 @@ export class MultiTimer {
         return this.elapsed / this.total * 100;
     }
 
-    stateChanged: (state: TimerState) => void;
-    progressChanged: (progress: number) => void;
+    readonly stateChanged: Delegate<TimerState>;
+    readonly progressChanged: Delegate<number>;
 
     private tick(): void {
         if (this.state != TimerState.Started) {
@@ -107,10 +107,7 @@ export class MultiTimer {
 
         this.countdown--;
         this.elapsed++;
-
-        if (this.progressChanged) {
-            this.progressChanged(this.getProgress());
-        }
+        this.raiseProgressChanged(this.getProgress());
         
         if (this.countdown == 0) {
             this.onTimeout();
