@@ -27,7 +27,7 @@ class App {
             }
             if (state != TimerState.Started && this.keepScreenRequested) {
                 this.keepScreenRequested = false;
-                tizen.power.request("SCREEN");
+                tizen.power.release("SCREEN");
             }
         })
         window.addEventListener("tizenhwkey", (ev: any) => {
@@ -49,7 +49,7 @@ class App {
     }
 
     private bzzt(): void {
-        navigator.vibrate(300);
+        navigator.vibrate([100, 100, 100]);
     }
 }
 

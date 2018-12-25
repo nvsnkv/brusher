@@ -2,11 +2,12 @@ declare const tizen: ITizen;
 
 declare interface ITizen {
     application: ITizenApplication;
-    power: ITizenPower;
+    power: IPowerManager;
 }
 
-declare interface ITizenPower {
-    request(resource: string, option?: string): void;
+declare interface IPowerManager {
+    request(resource: string, state: string): void;
+    release(resource: string): void;
 }
 
 declare interface ITizenApplication {
