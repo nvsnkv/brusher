@@ -29,7 +29,8 @@ class App {
                 this.keepScreenRequested = false;
                 tizen.power.release("SCREEN");
             }
-        })
+        });
+        
         window.addEventListener("tizenhwkey", (ev: any) => {
             if (ev.keyName === "back") {
                 switch (timer.getState()) {
@@ -49,7 +50,7 @@ class App {
     }
 
     private bzzt(): void {
-        navigator.vibrate([100, 100, 100]);
+        navigator.vibrate([200, 100, 200]);
     }
 }
 
