@@ -14,10 +14,6 @@ export class Delegate<T> {
         return {delegate, invocator: (arg) => delegate.call(arg)};
     }
 
-    private getCaller(): (arg: T) => void {
-        return (arg: T) => this.call(arg);
-    }
-
     private call(arg: T) {
         for (const callback of this.callbacks) {
             callback(arg);
