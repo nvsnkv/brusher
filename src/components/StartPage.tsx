@@ -1,6 +1,6 @@
 import * as React from "react";
 import CircularProgressbar from "react-circular-progressbar";
-import { MultiTimer, TimerState } from "../MultiTimer";
+import { MultiTimer, TimerState } from "../timer/MultiTimer";
 
 export interface IStartPageProps {
     timer: MultiTimer;

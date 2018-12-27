@@ -2,9 +2,9 @@ import * as React from "react";
 import * as ReactDOM from "react-dom";
 
 import {StartPage} from "./components/StartPage";
-import {MultiTimer, TimerState} from "./MultiTimer";
-import * as navigator from "./navigator";
-import * as tizen from "./tizen";
+import * as navigator from "./definitions/navigator";
+import * as tizen from "./definitions/tizen";
+import {MultiTimer, TimerState} from "./timer/MultiTimer";
 
 class App {
     private readonly timeouts: number[] = [
@@ -30,7 +30,7 @@ class App {
                 tizen.power.release("SCREEN");
             }
         });
-        
+
         window.addEventListener("tizenhwkey", (ev: any) => {
             if (ev.keyName === "back") {
                 switch (timer.getState()) {
