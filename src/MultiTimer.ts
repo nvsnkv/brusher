@@ -1,4 +1,4 @@
-import { Delegate } from "./Delegete";
+import { Delegate } from "./Delegate";
 
 export enum TimerState {
     Started,
