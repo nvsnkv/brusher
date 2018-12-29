@@ -32,6 +32,7 @@ module.exports = {
         "react": "React",
         "react-dom": "ReactDOM",
         "./definitions/tizen": "tizen",
-        "./definitions/navigator": "navigator"
+        "../definitions/tizen": "tizen",
+        "../definitions/navigator": "navigator"
     }
 };

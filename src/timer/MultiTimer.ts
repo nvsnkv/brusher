@@ -1,40 +1,58 @@
-import { Delegate } from "../utils/Delegate";
+import {Delegate} from "../utils/Delegate";
+import {IMultiTimer} from "./IMultiTimer";
+import {TimeoutKind} from "./TimeoutKind";
+import {TimerState} from "./TimerState";
 
-export enum TimerState {
-    Started,
-    Paused,
-    Stopped
-}
-
-export class MultiTimer {
+export class MultiTimer implements IMultiTimer {
     private readonly timeouts: number[];
-    private readonly total: number = 0;
-    private readonly onTimeout: () => void;
-    private readonly raiseStateChanged: (arg: TimerState) => void;
-    private readonly raiseProgressChanged: (arg: number) => void;
+    private readonly duration: number;
+    
+    private readonly raiseStateChanged: (s: TimerState) => void;
+    private readonly raiseProgressChanged: () => void;
+    private readonly raiseTimeoutOccured: (k: TimeoutKind) => void;
 
-    private state: TimerState  = TimerState.Stopped;
-
-    private index: number;
-    private countdown: number;
+    private state: TimerState;
     private elapsed: number;
-    private interval: number;
+    private timeoutIndex: number;
+    private timeout: number;
+    private tickRequested: boolean;
+    
+    readonly onTimeout: Delegate<TimeoutKind>;
+    readonly onStateChanged: Delegate<TimerState>;
+    readonly onProgressChanged: Delegate<number>;
 
-    constructor(timeouts: number[], onTimeout: () => void) {
+    constructor(timeouts: number[]) {
         this.timeouts = timeouts;
+        this.duration = timeouts.length;
         for (const timeout of timeouts) {
-            this.total += timeout;
+            this.duration += timeout;
+        }
+        this.elapsed = 0;
+        this.state = TimerState.Stopped;
+
+        this.timeout = -1;
+        this.timeoutIndex = -1;
+        this.tickRequested = false;
+
+        {
+            const { delegate, invocator } = Delegate.Create<TimerState>();
+            this.onStateChanged = delegate;
+            this.raiseStateChanged = invocator;
         }
 
-        this.onTimeout = onTimeout;
-        let { delegate, invocator } = Delegate.Create<TimerState>();
-        this.stateChanged = delegate;
-        this.raiseStateChanged = invocator;
+        {
+            const { delegate, invocator } = Delegate.Create<number>();
+            this.onProgressChanged = delegate;
+            this.raiseProgressChanged = () => {
+                invocator(this.elapsed / this.duration * 100);
+            };
+        }
 
-        ({ delegate, invocator } = Delegate.Create<number>());
-
-        this.progressChanged = delegate;
-        this.raiseProgressChanged = invocator;
+        {
+            const { delegate, invocator } = Delegate.Create<TimeoutKind>();
+            this.onTimeout = delegate;
+            this.raiseTimeoutOccured = invocator;
+        }
     }
 
     start(): void {
@@ -42,76 +60,70 @@ export class MultiTimer {
             return;
         }
 
-        if (this.state == TimerState.Paused) {
-            this.state = TimerState.Started;
-            this.raiseStateChanged(this.state);
-        }
-        else {
-            this.index = -1;
-            this.countdown = -1;
-            this.elapsed = 0;
-
-            this.interval = window.setInterval(() => this.tick(), 1000);
-            this.state = TimerState.Started;
-            this.raiseStateChanged(this.state);
-        }
-    }
-
-    stop(): void {
         if (this.state == TimerState.Stopped) {
-            return;
+            this.timeoutIndex = -1;
+            this.timeout = -1;
+            this.elapsed = 0;
+            this.raiseProgressChanged();
         }
 
-        this.state = TimerState.Stopped;
-        this.elapsed = 0;
-        this.raiseStateChanged(this.state);
-        
-        window.clearInterval(this.interval);
-        this.interval = null;
-
-        this.index = -1;
-        this.countdown = -1;
+        this.setState(TimerState.Started);
+        if (!this.tickRequested) {
+            this.tick();
+        }
     }
 
     pause(): void {
-        this.state = TimerState.Paused;
-        this.raiseStateChanged(this.state);
+        this.setState(TimerState.Paused);
+    }
+
+    stop(): void {
+        this.setState(TimerState.Stopped);
+        this.tickRequested = false;
+        this.elapsed = 0;
+        this.raiseProgressChanged();
     }
 
     getState(): TimerState {
         return this.state;
     }
 
-    getProgress(): number {
-        return this.elapsed / this.total * 100;
+    private setState(state: TimerState): void {
+        if (this.state != state) {
+            this.state = state;
+            this.raiseStateChanged(state);
+        }
     }
 
-    readonly stateChanged: Delegate<TimerState>;
-    readonly progressChanged: Delegate<number>;
-
     private tick(): void {
+        this.tickRequested = false;
         if (this.state != TimerState.Started) {
             return;
         }
 
-        if (this.countdown == -1) {
-            this.index++;
+        if (this.timeout == -1) {
+            this.timeoutIndex++;
+            this.timeout = this.timeouts[this.timeoutIndex];
+            this.elapsed++;
+        }
+        else {
+            this.timeout--;
+            this.elapsed++;
+            this.raiseProgressChanged();
 
-            if (this.timeouts.length <= this.index) {
-                this.stop();
-                return;
+            if (this.timeout == 0) {
+                const timeoutKind = this.timeoutIndex == 0
+                    ? TimeoutKind.First
+                    : this.timeoutIndex == this.timeouts.length - 1
+                        ? TimeoutKind.Last
+                        : TimeoutKind.Subsequent;
+
+                this.raiseTimeoutOccured(timeoutKind);
             }
 
-            this.countdown = this.timeouts[this.index];
+            this.tickRequested = true;
+            window.setTimeout(() => this.tick(), 1000);
         }
 
-        this.countdown--;
-        this.elapsed++;
-        this.raiseProgressChanged(this.getProgress());
-        
-        if (this.countdown == 0) {
-            this.onTimeout();
-            this.countdown = -1;
-        }
     }
 }

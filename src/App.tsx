@@ -1,10 +1,12 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 
-import {StartPage} from "./components/StartPage";
-import * as navigator from "./definitions/navigator";
+import {TimerPage} from "./components/TimerPage";
 import * as tizen from "./definitions/tizen";
-import {MultiTimer, TimerState} from "./timer/MultiTimer";
+import {IMultiTimer} from "./timer/IMultiTimer";
+import {TimeoutKind} from "./timer/TimeoutKind";
+import {TimerState} from "./timer/TimerState";
+import {Botherer} from "./utils/Botherer";
 
 class App {
     private readonly timeouts: number[] = [
@@ -16,41 +18,40 @@ class App {
         5, 5, 5, 5, 5,
     ];
 
-    private keepScreenRequested: boolean = false;
+    private readonly timer: IMultiTimer;
+    private readonly botherer: Botherer = new Botherer();
 
-    start(): void {
-        const timer = new MultiTimer(this.timeouts, () => this.bzzt());
-        timer.stateChanged.add((state) => {
-            if (state == TimerState.Started && !this.keepScreenRequested) {
-                this.keepScreenRequested = true;
-                tizen.power.request("SCREEN", "SCREEN_NORMAL");
+    constructor() {
+   
+        this.timer.onTimeout.add((kind) => {
+            if (kind != TimeoutKind.Subsequent) {
+                this.botherer.disturb();
             }
-            if (state != TimerState.Started && this.keepScreenRequested) {
-                this.keepScreenRequested = false;
-                tizen.power.release("SCREEN");
+            else {
+                this.botherer.bother();
             }
         });
+    }
 
+    start(): void {
         window.addEventListener("tizenhwkey", (ev: any) => {
             if (ev.keyName === "back") {
-                switch (timer.getState()) {
+                switch (this.timer.getState()) {
                     case TimerState.Started:
-                        timer.pause();
+                        this.timer.pause();
                         break;
 
                     case TimerState.Paused:
-                        timer.stop();
+                        this.timer.stop();
+                        break;
 
                     case TimerState.Stopped:
                     tizen.application.getCurrentApplication().exit();
                 }
            }
         });
-        ReactDOM.render(<StartPage timer={timer} />, document.getElementById("application"));
-    }
 
-    private bzzt(): void {
-        navigator.vibrate([200, 100, 200]);
+        ReactDOM.render(<TimerPage timer={this.timer} />, document.getElementById("application"));
     }
 }
 
