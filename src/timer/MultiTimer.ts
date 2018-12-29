@@ -1,6 +1,7 @@
 import {Delegate} from "../utils/Delegate";
 import {IMultiTimer} from "./IMultiTimer";
 import {TimeoutKind} from "./TimeoutKind";
+import {TimerProgress} from "./TimerProgress";
 import {TimerState} from "./TimerState";
 
 export class MultiTimer implements IMultiTimer {
@@ -19,11 +20,11 @@ export class MultiTimer implements IMultiTimer {
     
     readonly onTimeout: Delegate<TimeoutKind>;
     readonly onStateChanged: Delegate<TimerState>;
-    readonly onProgressChanged: Delegate<number>;
+    readonly onProgressChanged: Delegate<TimerProgress>;
 
     constructor(timeouts: number[]) {
         this.timeouts = timeouts;
-        this.duration = timeouts.length;
+        this.duration = timeouts.length * 2;
         for (const timeout of timeouts) {
             this.duration += timeout;
         }
@@ -41,10 +42,12 @@ export class MultiTimer implements IMultiTimer {
         }
 
         {
-            const { delegate, invocator } = Delegate.Create<number>();
+            const { delegate, invocator } = Delegate.Create<TimerProgress>();
             this.onProgressChanged = delegate;
             this.raiseProgressChanged = () => {
-                invocator(this.elapsed / this.duration * 100);
+                const progress = this.elapsed / this.duration * 100;
+                const remaining = this.state != TimerState.Started ? null : this.duration - this.elapsed;
+                invocator(new TimerProgress(progress, remaining));
             };
         }
 
@@ -103,8 +106,13 @@ export class MultiTimer implements IMultiTimer {
 
         if (this.timeout == -1) {
             this.timeoutIndex++;
+            if (this.timeoutIndex >= this.timeouts.length) {
+                this.stop();
+                return;
+            }
             this.timeout = this.timeouts[this.timeoutIndex];
             this.elapsed++;
+            this.raiseProgressChanged();
         }
         else {
             this.timeout--;
@@ -120,10 +128,9 @@ export class MultiTimer implements IMultiTimer {
 
                 this.raiseTimeoutOccured(timeoutKind);
             }
-
-            this.tickRequested = true;
-            window.setTimeout(() => this.tick(), 1000);
         }
-
+        
+        this.tickRequested = true;
+        window.setTimeout(() => this.tick(), 1000);
     }
 }

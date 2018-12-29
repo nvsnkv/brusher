@@ -2,10 +2,11 @@ import * as React from "react";
 import CircularProgressbar from "react-circular-progressbar";
 
 import {IMultiTimer} from "../timer/IMultiTimer";
+import {TimerProgress} from "../timer/TimerProgress";
 import {TimerState} from "../timer/TimerState";
 
 interface ITimerProps { timer: IMultiTimer; }
-interface ITimerState { state: TimerState; progress: number; }
+interface ITimerState { state: TimerState; progress: number; remaining: number; }
 
 export class TimerPage extends React.Component<ITimerProps, ITimerState> {
     private timer: IMultiTimer;
@@ -17,22 +18,24 @@ export class TimerPage extends React.Component<ITimerProps, ITimerState> {
         this.timer = props.timer;
         this.debouncedState = {
             state: TimerState.Stopped,
-            progress: -1
+            progress: -1,
+            remaining: null
         };
 
         this.timer.onStateChanged.add((state) => this.updateState(state, null));
         this.timer.onProgressChanged.add((progress) => this.updateState(null, progress));
 
-        this.updateState(null, null);
+        this.state = this.debouncedState;
     }
 
-    private  updateState(timerState?: TimerState, progress?: number): void {
+    private  updateState(timerState?: TimerState, progress?: TimerProgress): void {
         if (timerState !== null) {
             this.debouncedState.state = timerState;
         }
 
         if (progress != null) {
-            this.debouncedState.progress = progress;
+            this.debouncedState.progress = progress.percentage;
+            this.debouncedState.remaining = progress.remaining;
         }
 
         this.setState(this.debouncedState);
@@ -57,6 +60,9 @@ export class TimerPage extends React.Component<ITimerProps, ITimerState> {
                     </footer>
                     <div id="progressHolder">
                         <CircularProgressbar percentage={state.progress} strokeWidth={4} styles={{trail: { stroke: "black" }}}/>
+                    </div>
+                    <div id="countdown">
+                        <span>{state.remaining != null ? state.remaining.toString() : ""}</span>
                     </div>
                </div>;
     }

@@ -42,6 +42,17 @@ body {
 	z-index: 1;
 }
 
+#countdown {
+	position: fixed; 
+	top: 184px;
+	left: 8px;
+	width: 360px;
+	height: 20px;
+	z-index: 1;
+	text-align: center;
+	color: black;
+} 
+
 #footer {
 	z-index: 2;
 }

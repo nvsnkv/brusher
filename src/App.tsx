@@ -4,6 +4,7 @@ import * as ReactDOM from "react-dom";
 import {TimerPage} from "./components/TimerPage";
 import * as tizen from "./definitions/tizen";
 import {IMultiTimer} from "./timer/IMultiTimer";
+import {MultiTimer} from "./timer/MultiTimer";
 import {TimeoutKind} from "./timer/TimeoutKind";
 import {TimerState} from "./timer/TimerState";
 import {Botherer} from "./utils/Botherer";
@@ -22,7 +23,8 @@ class App {
     private readonly botherer: Botherer = new Botherer();
 
     constructor() {
-   
+        this.timer = new MultiTimer(this.timeouts);
+
         this.timer.onTimeout.add((kind) => {
             if (kind != TimeoutKind.Subsequent) {
                 this.botherer.disturb();

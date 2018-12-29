@@ -1,5 +1,6 @@
 import {Delegate} from "../utils/Delegate";
 import {TimeoutKind} from "./TimeoutKind";
+import {TimerProgress} from "./TimerProgress";
 import {TimerState} from "./TimerState";
 
 export interface IMultiTimer {
@@ -11,5 +12,5 @@ export interface IMultiTimer {
 
     onTimeout: Delegate<TimeoutKind>;
     onStateChanged: Delegate<TimerState>;
-    onProgressChanged: Delegate<number>;
+    onProgressChanged: Delegate<TimerProgress>;
 }
