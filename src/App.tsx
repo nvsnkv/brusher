@@ -21,6 +21,7 @@ class App {
 
     private readonly timer: IMultiTimer;
     private readonly botherer: Botherer = new Botherer();
+    private screenRequested: boolean;
 
     constructor() {
         this.timer = new MultiTimer(this.timeouts);
@@ -31,6 +32,17 @@ class App {
             }
             else {
                 this.botherer.bother();
+            }
+        });
+
+        this.timer.onStateChanged.add((state) => {
+            if (!this.screenRequested && state == TimerState.Started){
+                tizen.power.request("SCREEN", "SCREEN_DIM");
+                this.screenRequested = true;
+            }
+            else if (this.screenRequested && state != TimerState.Started) {
+                tizen.power.release("SCREEN");
+                this.screenRequested = false;
             }
         });
     }
