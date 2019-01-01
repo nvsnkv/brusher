@@ -6,6 +6,8 @@ declare interface ITizen {
 }
 
 declare interface IPowerManager {
+    turnScreenOff(): any;
+    turnScreenOn(): any;
     request(resource: string, state: string): void;
     release(resource: string): void;
 }
