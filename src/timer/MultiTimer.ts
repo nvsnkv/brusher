@@ -1,4 +1,5 @@
 import {Delegate} from "../utils/Delegate";
+import {HeartbitProvier as HeartbitProvier} from "../utils/Heartbit";
 import {IMultiTimer} from "./IMultiTimer";
 import {TimeoutKind} from "./TimeoutKind";
 import {TimerProgress} from "./TimerProgress";
@@ -6,6 +7,7 @@ import {TimerState} from "./TimerState";
 
 export class MultiTimer implements IMultiTimer {
     private readonly timeouts: number[];
+    private readonly heartbit: HeartbitProvier;
     private readonly duration: number;
     
     private readonly raiseStateChanged: (s: TimerState) => void;
@@ -16,13 +18,12 @@ export class MultiTimer implements IMultiTimer {
     private elapsed: number;
     private timeoutIndex: number;
     private timeout: number;
-    private tickRequested: boolean;
     
     readonly onTimeout: Delegate<TimeoutKind>;
     readonly onStateChanged: Delegate<TimerState>;
     readonly onProgressChanged: Delegate<TimerProgress>;
 
-    constructor(timeouts: number[]) {
+    constructor(timeouts: number[], heartbit: HeartbitProvier) {
         this.timeouts = timeouts;
         this.duration = timeouts.length * 2;
         for (const timeout of timeouts) {
@@ -33,7 +34,8 @@ export class MultiTimer implements IMultiTimer {
 
         this.timeout = -1;
         this.timeoutIndex = -1;
-        this.tickRequested = false;
+        this.heartbit = heartbit;
+        this.heartbit.onTick.add(() => this.tick());
 
         {
             const { delegate, invocator } = Delegate.Create<TimerState>();
@@ -71,18 +73,17 @@ export class MultiTimer implements IMultiTimer {
         }
 
         this.setState(TimerState.Started);
-        if (!this.tickRequested) {
-            this.tick();
-        }
+        this.heartbit.start();
     }
 
     pause(): void {
         this.setState(TimerState.Paused);
+        this.heartbit.stop();
     }
 
     stop(): void {
         this.setState(TimerState.Stopped);
-        this.tickRequested = false;
+        this.heartbit.stop();
         this.elapsed = 0;
         this.raiseProgressChanged();
     }
@@ -99,7 +100,6 @@ export class MultiTimer implements IMultiTimer {
     }
 
     private tick(): void {
-        this.tickRequested = false;
         if (this.state != TimerState.Started) {
             return;
         }
@@ -129,8 +129,5 @@ export class MultiTimer implements IMultiTimer {
                 this.raiseTimeoutOccured(timeoutKind);
             }
         }
-        
-        this.tickRequested = true;
-        window.setTimeout(() => this.tick(), 1000);
     }
 }

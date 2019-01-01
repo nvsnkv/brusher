@@ -1,8 +1,11 @@
 module.exports = {
     mode: "none",
-    entry: "./src/App.tsx",
+    entry: {
+        app: "./src/App.tsx",
+        heartbit: "./src/Heartbit.ts"
+    },
     output: {
-        filename: "app.js",
+        filename: "[name].js",
         path: __dirname
     },
 

@@ -8,6 +8,7 @@ import {MultiTimer} from "./timer/MultiTimer";
 import {TimeoutKind} from "./timer/TimeoutKind";
 import {TimerState} from "./timer/TimerState";
 import {Botherer} from "./utils/Botherer";
+import {HeartbitProvier} from "./utils/Heartbit";
 
 class App {
     private readonly timeouts: number[] = [
@@ -21,10 +22,10 @@ class App {
 
     private readonly timer: IMultiTimer;
     private readonly botherer: Botherer = new Botherer();
-    private screenRequested: boolean;
 
     constructor() {
-        this.timer = new MultiTimer(this.timeouts);
+        const heartbit = new HeartbitProvier("./heartbit.js");
+        this.timer = new MultiTimer(this.timeouts, heartbit);
 
         this.timer.onTimeout.add((kind) => {
             if (kind != TimeoutKind.Subsequent) {
@@ -32,17 +33,6 @@ class App {
             }
             else {
                 this.botherer.bother();
-            }
-        });
-
-        this.timer.onStateChanged.add((state) => {
-            if (!this.screenRequested && state == TimerState.Started){
-                tizen.power.request("SCREEN", "SCREEN_DIM");
-                this.screenRequested = true;
-            }
-            else if (this.screenRequested && state != TimerState.Started) {
-                tizen.power.release("SCREEN");
-                this.screenRequested = false;
             }
         });
     }
