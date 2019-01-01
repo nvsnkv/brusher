@@ -1,5 +1,7 @@
 import {Delegate} from "./Delegate";
 
+declare function postMessage(mesage: any): void;
+
 export class HeartbitProvier {
     private readonly workerScriptPath: string;
     private readonly raiseTick: (arg: void) => void; // TS compiler told me to create void parameter :)
@@ -33,6 +35,6 @@ export class HeartbitProvier {
     }
 
     static workerMain(): void {
-        window.setInterval(() => postMessage(null, "*"), 1000);
+        setInterval(() => postMessage(null), 1000);
     }
 }
