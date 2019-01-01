@@ -13,11 +13,11 @@ import {HeartbitProvier} from "./utils/Heartbit";
 class App {
     private readonly timeouts: number[] = [
         3,
-        5, 5, 5, 5, 5, 5,
-        5, 5, 5, 5, 5, 5,
-        5, 5, 5, 5, 5, 5,
-        5, 5, 5, 5, 5,
-        5, 5, 5, 5, 5,
+        4, 4, 4, 4, 4, 4,
+        4, 4, 4, 4, 4, 4,
+        4, 4, 4, 4, 4, 4,
+        4, 4, 4, 4, 4,
+        4, 4, 4, 4, 4,
     ];
 
     private readonly timer: IMultiTimer;
