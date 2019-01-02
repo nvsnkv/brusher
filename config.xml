@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<widget xmlns="http://www.w3.org/ns/widgets" xmlns:tizen="http://tizen.org/ns/widgets" id="https://bitbucket.org/nvsnkv/teeths_brushing_helper" version="0.3.0" viewmodes="maximized">
+<widget xmlns="http://www.w3.org/ns/widgets" xmlns:tizen="http://tizen.org/ns/widgets" id="https://bitbucket.org/nvsnkv/teeths_brushing_helper" version="0.3.5" viewmodes="maximized">
     <tizen:application id="vP9FvqS3Ak.TeethsBrushingHelper" package="vP9FvqS3Ak" required_version="2.3.2"/>
     <content src="index.html"/>
     <feature name="http://tizen.org/feature/screen.size.normal"/>

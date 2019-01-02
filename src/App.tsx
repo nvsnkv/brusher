@@ -24,7 +24,7 @@ class App {
     private readonly botherer: Botherer = new Botherer();
 
     constructor() {
-        const heartbit = new HeartbitProvier("./heartbit.js");
+        const heartbit = new HeartbitProvier();
         this.timer = new MultiTimer(this.timeouts, heartbit);
 
         this.timer.onTimeout.add((kind) => {
