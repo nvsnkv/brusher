@@ -1,1 +1,1 @@
-webpack && .\build-steps\tizen-build.bat && .\build-steps\tizen-package.bat && .\build-steps\rename.bat
+webpack && .\build-steps\tizen-build.bat && .\build-steps\tizen-package.bat

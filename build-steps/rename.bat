@@ -1,1 +1,0 @@
-ren "%~dp0\..\.buildResult\Brush Companion.wgt" BrushCompanion.wgt
