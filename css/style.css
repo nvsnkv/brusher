@@ -41,7 +41,7 @@ body {
 }
 
 #progressHolder {
-	position: fixed; 
+	position: relative; 
 	top: 0px;
 	left: 0px;
 	width: 360px;
@@ -50,7 +50,7 @@ body {
 }
 
 #countdown {
-	position: fixed; 
+	position: relative; 
 	top: 234px;
 	left: 8px;
 	width: 360px;
@@ -58,7 +58,28 @@ body {
 	z-index: 1;
 	text-align: center;
 	color: black;
-} 
+}
+
+.timer {
+	position: relative;
+	width: 360px;
+	text-align: center;
+	top: 20px;
+	font-size: 60px;
+}
+
+.timer.off {
+	color: #D0D0D0;
+}
+
+.timer.on {
+	color: #A0F0FF;
+}
+
+.ui-page{
+	width:360px;
+	height: 360px;
+}
 
 #footer {
 	z-index: 2;

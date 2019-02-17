@@ -1,6 +1,7 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 
+import {Reminder} from "./components/Reminder";
 import {SwipeScroller} from "./components/SwipeScroller";
 import {TimerPage} from "./components/TimerPage";
 import * as tizen from "./definitions/tizen";
@@ -23,6 +24,7 @@ class App {
 
     private readonly timer: IMultiTimer;
     private readonly botherer: Botherer = new Botherer();
+    private swipeScroller: SwipeScroller;
 
     constructor() {
         const heartbit = new HeartbitProvier();
@@ -41,6 +43,10 @@ class App {
     start(): void {
         window.addEventListener("tizenhwkey", (ev: any) => {
             if (ev.keyName === "back") {
+                if (this.swipeScroller && this.swipeScroller.back()) {
+                    return;
+                }
+
                 switch (this.timer.getState()) {
                     case TimerState.Started:
                         this.timer.pause();
@@ -57,7 +63,8 @@ class App {
         });
 
         try {
-            ReactDOM.render(<SwipeScroller>
+            ReactDOM.render(<SwipeScroller ref={(elem) => this.swipeScroller = elem}>
+                <Reminder></Reminder>
                 <TimerPage timer={this.timer} />
             </SwipeScroller>
             , document.getElementById("application"));
