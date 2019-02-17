@@ -56,10 +56,16 @@ class App {
            }
         });
 
-        ReactDOM.render(<SwipeScroller>
-            <TimerPage timer={this.timer} />
-        </SwipeScroller>
-        , document.getElementById("application"));
+        try {
+            ReactDOM.render(<SwipeScroller>
+                <TimerPage timer={this.timer} />
+            </SwipeScroller>
+            , document.getElementById("application"));
+        }
+        catch (e) {
+            console.log("[Brusher] [init] Unhandled exception occured!\n" + JSON.stringify(e));
+            tizen.application.getCurrentApplication().exit();
+        }
     }
 }
 

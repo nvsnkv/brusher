@@ -37,7 +37,7 @@ export class SwipeScroller extends React.Component<{}, { page: number, style: Re
     }
 
     componentDidMount(): void {
-        tau.event.enableGesture(this.container, tau.event.gesture.Swipe({
+        tau.event.enableGesture(this.container, new tau.event.gesture.Swipe({
             orientation: "horizontal"
         }));
 

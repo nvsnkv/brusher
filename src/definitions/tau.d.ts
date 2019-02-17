@@ -11,28 +11,32 @@ declare global {
         }
     
         interface IEventApi {
-            enableGesture: (node: HTMLElement, event: IEvent<{}>) => void;
+            enableGesture: (node: HTMLElement, strategy: any) => void;
             disableGesture: (node: HTMLElement) => void;
-            
-            gesture: IGestures,
+            gesture: IGestureStrategies
         }
 
-        interface IGestures {
-            Swipe: (definition: ISwipeEventDefinition) => IEvent<ISwipeDetails>;
+        interface IGestureStrategies {
+            Swipe: typeof SwipeStrategy;
+        }
+
+        class SwipeStrategy {
+            constructor(options: {
+                orientation?: string,
+                velocity?: number,
+                timeTreshold?: number
+            })
         }
 
         interface IEvent<T> extends Event {
             readonly detail: T
         }
 
-        interface ISwipeEventDefinition {
-            velocity?: number,
-            orientation?: string,
-            timeTreshold?: number
+        interface ISwipeDetails {
+            readonly direction: string;
         }
 
-        interface ISwipeDetails {
-            direction: string;
-        }
+        // TODO: find a proper way to declare event strategies like gesture.Swipe and so on
+        // new tau.event.gesture.Swipe()
     }    
 }
