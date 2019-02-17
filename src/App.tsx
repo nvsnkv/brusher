@@ -1,6 +1,7 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 
+import {SwipeScroller} from "./components/SwipeScroller";
 import {TimerPage} from "./components/TimerPage";
 import * as tizen from "./definitions/tizen";
 import {IMultiTimer} from "./timer/IMultiTimer";
@@ -55,7 +56,10 @@ class App {
            }
         });
 
-        ReactDOM.render(<TimerPage timer={this.timer} />, document.getElementById("application"));
+        ReactDOM.render(<SwipeScroller>
+            <TimerPage timer={this.timer} />
+        </SwipeScroller>
+        , document.getElementById("application"));
     }
 }
 

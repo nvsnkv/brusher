@@ -22,10 +22,17 @@ body {
 	padding-right: 16px;
 }
 
-.content_text {
-	font-weight:bold;
-	font-size:5em;
-	color:#fff;
+.swipe-scroller {
+	position: relative;
+	top: 0px;
+	height: 360px;
+	margin: 0px;
+	padding: 0px;
+	float: left;
+	-webkit-transition: 0.5s;
+	-moz-transition: 0.5s;
+	-o-transition: 0.5s;
+	transition: 0.5s;
 }
 
 .logo {
